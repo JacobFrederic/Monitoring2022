@@ -1,5 +1,6 @@
 #Point pattern analysis for population analysis
 library(spatstat)                                   #access the spatstat package
+library(rgdal)                                      #access the rgdal package
 #Use setwd function to set up a working directory
 setwd("C:/Users/jacob/Documents/R/lab")
 covid <- read.table("covid_agg.csv",header=TRUE)    #upload the necessary file and assign it to the object covid
@@ -16,3 +17,18 @@ points(covid_planar,pch=19)                         #adding the locations of the
 cl <- colorRampPalette(c('violet','blue','cyan','green','yellow','orange','red','magenta'))(100)
 plot(density_map, col = cl)
 points(covid_planar)
+
+#The next step will be to add the coastlines to the plotted image to better visualize the data
+coastlines <- readOGR("ne_10m_coastline.shp")       #this function extracts the coastline shp-file from the lab folder and assigns the information to the object coastlines
+#Like before we assign a colour palette to an object cl, plot the data with this colour scheme and then add the points and the coastlines with the following functions
+cl <- colorRampPalette(c('green','chartreuse','yellow','orange','red'))(500)
+plot(density_map,col=cl)
+points(covid_planar,pch=19,cex=0.5)
+plot(coastlines,add=TRUE)                           #the add=TRUE line indicates that instead of a new plot with the coastline data, the coastlines will be showed on top of the previous plot
+
+#To interpolate the data between the measured points we can do the following:
+marks(covid_planar) <- cases                        #used to assign the cases from the data file to marks on the covid_planar object
+cases_map <- Smooth(covid_planar)                   #interpolates the data in covid_planar and assigns the results to the object cases_map
+plot(cases_map,col=cl)
+points(covid_planar)
+plot(coastlines,add=T)
