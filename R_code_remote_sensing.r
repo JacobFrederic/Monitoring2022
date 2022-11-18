@@ -1,4 +1,4 @@
-#First exploration of working with landsat data at 30m spatial resolution from the amazon forest 
+#Working with landsat data at 30m spatial resolution from the Amazon rain forest
 #The image's name is p224r63_2011: path 224 and row 63 from 2011
 install.packages("RStoolbox")
 library(RStoolbox)
@@ -54,3 +54,17 @@ plotRGB(p224r63_1988,r=3,g=4,b=2,stretch="lin")
 par(mfrow=c(2,1))
 plotRGB(p224r63_1988,r=3,g=4,b=2,stretch="lin")
 plotRGB(p224r63_2011,r=3,g=4,b=2,stretch="lin")
+
+#Next, we can calculate the difference between the images pixel by pixel using a multitemporal analysis
+difnir <- p224r63_1988[[4]]-p224r63_2011[[4]]
+cl <- colorRampPalette(c("green","yellow","red"))(100)  #creating a colour palette highlighting the difference (reduction of Infrared reflection=red, increase green and no difference yellow)
+plot(difnir,col=cl)
+
+#With this data we can also calculate the difference in the vegetation index
+#For this we have to calculate the DVI by comparing the values of reflection of NearInfraRed and Red light
+dvi2011 <- p224r63_2011[[4]]-p224r63_2011[[3]]
+dvi1988 <- p224r63_1988[[4]]-p224r63_1988[[3]]
+plot(dvi2011)                                  #shows a map with distinctions between for example trees in green and areas with more water in red and orange tones
+difdvi <- dvi1988-dvi2011
+cl <- colorRampPalette(c("blue","green","red"))(100)
+plot(difdvi,col=cl)                            #shows a map showing the loss (red) and gain (blue) of vegetation compared to areas that didn't change (green)
