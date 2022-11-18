@@ -16,10 +16,10 @@ ggplot(d,aes(x=virus,y=death)) + geom_point(size=3,col="green") + geom_line(col=
 
 #To import and use data from a folder outside of R you can use the function for setting a working directory:
 setwd("C:/Users/jacob/Documents/R/lab") #the path within the brackets must match the path of the stored file
-#With the read.table function R converts the data from the file into a workable table
+#With the ~read.table() function R converts the data from the file into a workable table
 read.table("covid_agg.csv",header=TRUE) 
 #header=TRUE describes that the first row in the table is not a set of data but contains the names of the variables
 covid <- read.table("covid_agg.csv",header=TRUE) #assigns the table to the object "covid"
 summary(covid)                          #overview that also includes the information of maximum, minimum, mean and average of cases per country
-#Now the ggplot function can be used to create an image of the spatial distribution with varying point sizes to illustrate the amount of cases per country
+#Now the ~ggplot() function can be used to create an image of the spatial distribution with varying point sizes to illustrate the amount of cases per country
 ggplot(covid,aes(x=lon,y=lat,size=cases)) + geom_point()
