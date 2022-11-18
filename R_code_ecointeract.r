@@ -26,9 +26,9 @@ pairs(pol, col="green",cex=1.25, pch=15) #function to plot the partial amount of
 pairs(~ cadmium + lead + zinc, data=meuse)
 #To create a spatial dataset, we must transform the x and y values into coordinates by using this function:
 coordinates(meuse) = ~x+y 
-#The function spplot can now be used to create an image of the spatial distributions of all measurements or for visualizing the distribution of the values of the specific variables
-#In this case, these are the concentration of different elements at a riverbankspplot(meuse, "zinc", main="Concentration of zinc")
+#The function ~spplot() can now be used to create an image of the spatial distributions of all measurements or for visualizing the distribution of the values of the specific variables
+#In this case, these are the concentration of different elements at a riverbank
 spplot(meuse, "zinc", main="Concentration of zinc")
 spplot(meuse, c("copper","zinc")) #creates an array (which is why it is important to add a c), plotting several variables together
-#With the bubble function, the different concentration can be visualized by different symbol sizes instead of different colours, offering a clearer and more colourblind-friendly overview
+#With the ~bubble() function, the different concentration can be visualized by different symbol sizes instead of different colours, offering a clearer and more colourblind-friendly overview
 bubble(meuse, "zinc")
