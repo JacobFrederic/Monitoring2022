@@ -1,7 +1,9 @@
 #Using remote sensing to calculating vegetation indices
 library(raster)
-library(RStoolbox)#for classifying data
-library(patchwork)
+library(RStoolbox)  #for classifying data
+library(ggplot2)    #for the final histogram plot
+library(patchwork)  #to show the histogram plots together
+library(gridExtra)  #to show the histogram plots together
 setwd("C:/Users/jacob/Documents/R/lab")
 l1992 <- brick("defor1.png")
 #Bands contain the following information: 1 is NIR, 2 red and 3 green
@@ -48,3 +50,34 @@ h2006
 # 2006
 # class 2: forest - 179249 - ~52 %
 # class 1: human  - 163477 - ~48 %
+
+#Creating a table to compare the data assigning the data to object and then using the ~data.frame() function
+landcover <- c("Forest","Humans")
+percent_1992 <- c(89.91,10.09)
+percent_2006 <- c(52.30,47.69)
+percent <- data.frame(landcover,percent_1992,percent_2006)
+percent         #showing the finished table
+#Now we can plot the data from the table as a graph showing the values of forest and human affected area in a bar chart
+ggplot(percent,aes(x=landcover,y=percent_1992,col=landcover)) + geom_bar(stat="identity",fill="white")
+ggplot(percent,aes(x=landcover,y=percent_2006,col=landcover)) + geom_bar(stat="identity",fill="white")
+
+#For simplicity assign the two ggplots to small objects so they can easily put in the ~grid.arrange() function
+p1 <- ggplot(percent,aes(x=landcover,y=percent_1992,color=landcover)) + geom_bar(stat="identity",fill="white")
+p2 <- ggplot(percent,aes(x=landcover,y=percent_2006,color=landcover)) + geom_bar(stat="identity",fill="white")
+grid.arrange(p1,p2,nrow=1)  #shows the two plots next to each other
+p1+p2                       #the same can be achieved using the patchwork package like this
+#Instead of showing the plots next to each other, we can also show them on top of each other
+p1/p2
+
+#Using the ggplot package, it's possible to separately look at different layers
+plotRGB(l1992,r=1,g=2,b=3,stretch="lin")
+ggRGB(l1992,1,2,3)  #simplified version of producing a RGB plot
+plot(dvi1992)
+ggplot() + geom_raster(dvi1992,mapping=aes(x=x,y=y,fill=layer)) + scale_fill_viridis(option="viridis")
+#To find the necessary name for the fill part of the function check the names of dvi1992 by simply typing in:
+dvi1992
+
+#Comparing two different colour schemes by plotting them next to each other
+e1 <- ggplot() + geom_raster(dvi1992,mapping=aes(x=x,y=y,fill=layer)) + scale_fill_viridis(option="viridis")
+e2 <- ggplot() + geom_raster(dvi1992,mapping=aes(x=x,y=y,fill=layer)) + scale_fill_viridis(option="magma")
+e1+e2
