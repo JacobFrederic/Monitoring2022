@@ -4,7 +4,7 @@
 install.packages("sdm")
 install.packages("rgdal",dependencies=T)
 library(sdm)
-library(raster)   #needed for predictions
+library(raster)             #needed for predictors
 library(rgdal)    
 
 #We are looking for the species.shp file within the sdm package (it's placed in a folder that is prenamed as external) with the following function
@@ -27,13 +27,29 @@ absences <- species[species$Occurrence != 1,]
 
 #Now this can be plotted with two different colours to visualize the distribution
 plot(presences,col="blue",pch=20)
-points(absences,col="red",pch=20) #this function adds the points to the previous plot instead of creating a new plot
+points(absences,col="red",pch=20)               #this function adds the points to the previous plot instead of creating a new plot
 
 #From this data we can create a map of the probability of the distribution
 #For this the environmental data (temperature, precipitation, elevation, vegetation) must be uploaded
 #This stack is called predictors, the factors that predict the distribution
-path <- system.file("external",package="sdm") #this simplifies the listing of the predictors in the next step
+path <- system.file("external",package="sdm")   #this simplifies the listing of the predictors in the next step
 lst <- list.files(path=path,pattern="asc$",full.names=T)
 lst
 
-#This list can be stacked and assigned to the object preds to 
+#This list can be stacked and assigned to the object preds to then plot the different predictors "intensities"
+preds <- stack(lst)
+plot(preds)
+
+#Now we set the data for the SDM by creating a single object encompassing both the species data and the predictors
+datasdm <- sdmData(train=species,predictors=preds)
+datasdm
+#With this data and the ~sdm() function we can create a model
+m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation,data=datasdm,methods="glm")
+#Creating the raster output layer with the model m1:
+p1 <- predict(m1,newdata=preds)
+#This final map of predicted occurence can be plotted
+plot(p1)
+
+#This map can now be stacked together with the predictors and visualized together
+s1 <- stack(preds,p1)
+plot(s1)
