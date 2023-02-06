@@ -20,7 +20,7 @@ Europe <- extent(-15,40,35,70)
 #Cumulating different grape variety acceptance leads to a temperature range of 13.1-20.9°C
 rangetsum <- seq(13.1,20.9,by=0.1)
 13.6 %in% rangetsum #Test
-#Additionally the temperature in winter must not fall below -15°C monthly mean temperature
+#Additionally the temperature in winter must not fall below -10°C monthly mean temperature
 rangetwin <- seq(-10,15,by=0.1)
 #Regarding precipitation, a range from annually 200mm up to 1226mm was considered suitable
 rangeprec <- c(200:1226)
@@ -319,8 +319,7 @@ ranges22gg <- (ggplot()
 ranges22gg
 
 #Now it is possible to compare the areas suitable for viticulture (based on summer mean temperatures) between the baseline climate (1970-2000) and the hypothetical 2022 climate
-ranges22gg+ranges00gg #Already a very extreme difference can be observed
-
+ranges00gg+ranges22gg #Already a very extreme difference can be observed
 
 #Because the two RasterLayers have different resolutions they have to be aligned
 #This can be done as follows
@@ -401,6 +400,7 @@ t <- (ggplot(d3,aes(x=Time,y=Frequency))
       + scale_fill_manual(values=c("palegreen","red4","sienna1"))
       + theme(plot.title=element_text(hjust=0.5)))
 t
+
 #In Conclusion, it is apparent that according to this simplified model much of the area that was suitable for growing wine in the recent past may very soon (or already today) not be ideal any more
 #The overall suitable area in Europe may also be decreasing and due to a high population density and unsuitable additional factors (Northern Germany being very flat for example), the potential for the emergence of new wine regions is limited
 #While this model shows quite drastic differences between 1970-2000 and 2022, this has to be viewed with caution
