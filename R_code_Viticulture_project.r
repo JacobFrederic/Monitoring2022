@@ -13,7 +13,7 @@ library(maps)       #for overlaying the country borders
 Europe <- extent(-15,40,35,70)
 
 #To create maps of the areas that are suitable for viticulture, the parameters have to be defined
-#According Hannah et al. (2013), the most important parameter is the growing season mean temperature
+#According Hannah et al. (2013 (Climate change, wine, and conservation), the most important parameter is the growing season mean temperature
 #In Europe the growing season is defined as April until October
 #Cumulating different grape variety acceptance leads to a temperature range of 13.1-20.9°C
 rangetsum <- seq(13.1,20.9,by=0.1)
@@ -43,7 +43,7 @@ t4 <- (ggplot()
        + scale_fill_viridis(limits=c(-15,30),option="inferno",alpha=1,direction=1,na.value=NA)
        + coord_fixed() 
        + theme(legend.title=element_blank())
-       + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3)
+       + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3) #double to ensure land mass have a colour underneath the plot and the border lines are above it
        + ylab ("latitude") + xlab ("longitude"))
 
 t5 <- (ggplot() + annotation_map(map_data("world"),fill="gray90") + theme_minimal() + geom_raster(tavgsum[[2]],mapping=aes(x=x,y=y,fill=wc2.1_2.5m_tavg_05)) + ggtitle("May") + theme(plot.title=element_text(hjust=0.5)) + scale_fill_viridis(limits=c(-15,30),option="inferno",alpha=1,direction=1,na.value=NA)  + coord_fixed() + theme(legend.title=element_blank()) + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3) + ylab ("latitude") + xlab ("longitude"))
@@ -53,15 +53,14 @@ t8 <- (ggplot() + annotation_map(map_data("world"),fill="gray90") + theme_minima
 t9 <- (ggplot() + annotation_map(map_data("world"),fill="gray90") + theme_minimal() + geom_raster(tavgsum[[6]],mapping=aes(x=x,y=y,fill=wc2.1_2.5m_tavg_09)) + ggtitle("September") + theme(plot.title=element_text(hjust=0.5)) + scale_fill_viridis(limits=c(-15,30),option="inferno",alpha=1,direction=1,na.value=NA) + coord_fixed() + theme(legend.title=element_blank()) + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3) + ylab ("latitude") + xlab ("longitude"))
 t10 <- (ggplot() + annotation_map(map_data("world"),fill="gray90") + theme_minimal() + geom_raster(tavgsum[[7]],mapping=aes(x=x,y=y,fill=wc2.1_2.5m_tavg_10)) + ggtitle("October") + theme(plot.title=element_text(hjust=0.5)) + scale_fill_viridis(limits=c(-15,30),option="inferno",alpha=1,direction=1,na.value=NA) + coord_fixed() + theme(legend.title=element_blank()) + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3) + ylab ("latitude") + xlab ("longitude"))
 
-#Visualization of summer monthly mean temperatures (without October)
+#Visualization of summer monthly mean temperatures (without May for aesthetic reasons) using ggplots
 tcomb <- ((t4+t6+t7)/(t8+t9+t10) 
           + plot_annotation(title="Monthly Mean Temperatures",subtitle="1970-2000",theme=theme(plot.title=element_text(hjust=0.5),plot.subtitle=element_text(hjust=0.5)))
           + plot_layout(guides = "collect")) #combining the legends into one combined one
 tcomb
 
-tavgsum[[1]]
 #They were merged into a single raster using the following function
-tsum <- stackApply(tavgsum,indices=c(1),fun=mean)
+tsum <- stackApply(tavgsum,indices=c(1),fun=mean)  #since overall mean temperature is required: fun=mean
 tsum
 #Visualization using the ggplot package
 tsumgg <- (ggplot() 
@@ -78,7 +77,7 @@ tsumgg <- (ggplot()
            + ylab ("latitude") + xlab ("longitude"))
 tsumgg
 
-#Because of technical reasons, the mean temperature data has to be rounded
+#Because of technical reasons, the mean temperature data has to be rounded for the next step
 rangesum <- round(tsum,digits=1)
 #With the following function, all values that are not within the defined temperature ranged will be deleted
 rangesum[!(rangesum %in% rangetsum)] <- NA
@@ -98,7 +97,7 @@ rangesumgg <- (ggplot()
                + ylab ("latitude") + xlab ("longitude"))
 rangesumgg
 #For later, the actual temperature will not be considered but only a binary approach of suitable/non-suitable
-#Therefore, using a subset, the suitable values will be simplified into 1
+#Therefore, using a subset, the suitable values will be simplified into 1 and then visualized
 ranges00 <- rangesum
 ranges00[(ranges00 %in% rangetsum)] <- 1
 ranges00
@@ -116,10 +115,10 @@ ranges00gg <- (ggplot()
 ranges00gg
 
 #A similar approach will be used for the condition of minimum monthly mean temperature being above -15°C
-#However, since the minimum mean monthly temp. is relevant and not just the overall mean, they first have to be computed separately
+#However, since the minimum monthly mean temperatue is relevant and not just the overall mean, they first have to be computed separately
 tavgwin <- tavgmonthly[[c(1,2,3,11,12)]]
 rangewin5 <- round(tavgwin,digits=0.1)
-#To allow later subtraction of areas with each other, they will be separated into suitable/non-suitable (considering the winter-condition)
+#To allow later subtraction of areas with each other, they will be separated into suitable/non-suitable (considering the winter conditions)
 rangewin5[(rangewin5 %in% rangetwin)] <- 1
 rangewin5[!(rangewin5 %in% rangetwin)] <- NA
 rangewin5
@@ -154,7 +153,7 @@ rangewingg <- (ggplot()
                + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3)
                + ylab ("latitude") + xlab ("longitude"))
 rangewingg
-range01gg+rangewingg
+range01gg+rangewingg     #Comparison of suitability based on just January and the combined raster to verify the results/calculations
 
 #Lastly, the precipitation limitations will be investigated
 #First, the monthly precipitation data will be uploaded
@@ -180,6 +179,7 @@ precagg <- (ggplot()
             + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3)
             + ylab ("latitude") + xlab ("longitude"))
 precagg   #Visualization of annual precipitation as ggplot
+
 rangep <- preca #creating a copy for further editing
 rangep[!(rangep %in% rangeprec)] <- NA  #changing the value of all areas not suitable to NA
 rangep[(rangep %in% rangeprec)] <- 1    #changing the value of all areas suitable to 1
@@ -202,6 +202,7 @@ rangepgg  #Visualization of range based on precipitation as ggplot
 ranges00gg+rangewingg+rangepgg
 #First the three range maps are stacked together
 srb <- stack(rangep,rangewin,ranges00) #stacked as stack range baseline
+
 #Merging the three, adding them on top of each other
 rb <- stackApply(srb,indices=c(1),fun=sum) #merged as range baseline
 rbgg <- (ggplot() 
@@ -216,6 +217,7 @@ rbgg <- (ggplot()
          + annotation_map(map_data("world"),fill=NA,colour="gray20",size=0.3)
          + ylab ("latitude") + xlab ("longitude"))
 rbgg  #Visualization of combined range parameter data as ggplot
+
 #Since in all three parameters 1 indicates suitable and 0 not suitable, in the merged RasterLayer, only the areas with a value of 3 (as the sum) should be suitable based on all three parameters
 #Accordingly, all values except 3 can be deleted to show this
 rb2 <- rb
@@ -235,7 +237,7 @@ rb2gg <- (ggplot()
           + ylab ("latitude") + xlab ("longitude"))
 rb2gg    #Creating a "final" ggplot of the range of areas suitable for viticulture based on summer and winter mean temperatures and precipitation
 
-#Now, using MODIS Land Surface Temperature/Emissivity data (Monthly L3 Global 0.05Deg CMG V006) from 2022 data we analyze the suitable areas in the present
+#Now, using files based MODIS Land Surface Temperature/Emissivity data (Monthly L3 Global 0.05Deg CMG V006) from 2022 we analyze the suitable areas in the present
 #Of course it is important to note that the weather data of one year is not as valid since viticulture depens on many climate cariables and depends on long-term climate and not just the weather in one year
 #So this map of suitable area should only be seen as a proxy for a hypothetical climate that can be represented by the year 2022
 #Considering the latest IPCC reports this seems to be an adequate hypothesis. 2022 was a year with very high temperatures, even compared to the last few years
@@ -298,7 +300,7 @@ rangesum22gg <- (ggplot()
                  + ylab ("latitude") + xlab ("longitude"))
 rangesum22gg
 rangesumgg+rangesum22gg + plot_layout(guides = "collect") & theme(legend.position="bottom") 
-#Simplifying data to categorize suitable/non-suitable
+#Simplifying data to categorize suitable/non-suitable as done before
 ranges22 <- rangesum22
 ranges22[(ranges22 %in% rangetsum)] <- 1
 ranges22
@@ -364,7 +366,7 @@ range00f[(range00f < 2)] <- 2
 sr <- stack(range22,range00f) #stacked as stack range
 r <- stackApply(sr,indices=c(1),fun=sum) #merged as range
 r[(r == 0)] <- NA     #In this sum, the ocean was assignes the value 0, which before plotting should be changed
-r[r==2] <- 4        #This and the next few steps are a fairly complicated (it was just the first way I could think about) to change the order from area gain, loss and retained to the more logical area gain, retained, loss
+r[r==2] <- 4        #This and the next few steps are a fairly complicated (it was just the first way I could think of) to change the order from area gain, loss and retained to the more logical area gain, retained, loss
 r[r==3] <- 2
 r[r==4] <- 3
 rgg <- (ggplot() 
