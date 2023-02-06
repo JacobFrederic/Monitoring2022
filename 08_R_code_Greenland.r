@@ -1,4 +1,5 @@
 #Analysis of a time series visualizing temperatures in Greenland
+
 #Access the required packages and set up a working directory where the images are stored
 library(raster)
 library(ggplot2)
