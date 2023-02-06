@@ -1,4 +1,5 @@
 #Community ecology example using multivariate analysis in R
+
 #Use a working directory to access external stored files and data and install the necessary packages
 setwd("C:/Users/jacob/Documents/R/lab")
 install.packages("vegan")       #package for vegetation analysis and community ecology
