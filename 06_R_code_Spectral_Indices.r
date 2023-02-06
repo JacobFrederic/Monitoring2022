@@ -1,4 +1,6 @@
 #Using remote sensing to calculating vegetation indices
+
+#access packages and set up working directory
 library(raster)
 library(RStoolbox)  #for classifying data
 library(ggplot2)    #for the final histogram plot
