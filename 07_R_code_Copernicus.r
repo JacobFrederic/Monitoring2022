@@ -1,4 +1,5 @@
 #Download and Analysis of Copernicus data
+
 #Install and access all necessary packages and set up the working directory where the Copernicus data will be stored
 library(ncdf4)      #used for reading raster images
 library(raster)     
