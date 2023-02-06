@@ -1,6 +1,6 @@
 #Using Species Distribution Modelling for prediction (of for example occurence) and understanding (for example the underlying factors of species distribution)
-#First, install and access all necessary packages
 
+#First, install and access all necessary packages
 install.packages("sdm")
 install.packages("rgdal",dependencies=T)
 library(sdm)
