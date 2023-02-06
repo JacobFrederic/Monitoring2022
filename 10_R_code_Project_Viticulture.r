@@ -199,7 +199,6 @@ rangepgg <- (ggplot()
              + ylab ("latitude") + xlab ("longitude"))
 rangepgg  #Visualization of range based on precipitation as ggplot
 
-
 #Now the three parameters can be combined to create a "better" fit of the actual suitable area
 ranges00gg+rangewingg+rangepgg
 #First the three range maps are stacked together
