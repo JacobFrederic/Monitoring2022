@@ -1,6 +1,6 @@
 #This is a code for investigating among ecological variables
-#First, remember to check if the necessary packages (in this case sp) are already installed, if not type: 
 
+#First, remember to check if the necessary packages (in this case sp) are already installed, if not type: 
 #install.packages("sp")
 library(sp)   #use library(sp) or require(sp) to access it
               #search https://cran.r-project.org/web/packages/gstat/vignettes/gstat.pdf to find information about the data set
