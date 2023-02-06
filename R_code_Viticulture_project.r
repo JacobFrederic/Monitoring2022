@@ -56,7 +56,7 @@ t10 <- (ggplot() + annotation_map(map_data("world"),fill="gray90") + theme_minim
 #Visualization of summer monthly mean temperatures (without May for aesthetic reasons) using ggplots
 tcomb <- ((t4+t6+t7)/(t8+t9+t10) 
           + plot_annotation(title="Monthly Mean Temperatures",subtitle="1970-2000",theme=theme(plot.title=element_text(hjust=0.5),plot.subtitle=element_text(hjust=0.5)))
-          + plot_layout(guides = "collect")) #combining the legends into one combined one
+          + plot_layout(guides="collect")) #combining the legends into one combined one
 tcomb
 
 #They were merged into a single raster using the following function
@@ -360,15 +360,15 @@ range22gg <- (ggplot()
 #To allow a differentiation between the different values in the next step, all values of the 1977-2000 model will be changed from 1 to -1
 #That way, it is possible to highlight areas that have become suitable and those that have lost their suitability separately
 range00f <- range00
-range00f[(range00f < 2)] <- 2
+range00f[(range00f <= 2)] <- 2
 
 #Now the two time points 1970-2000 and 2022 can be compared
 sr <- stack(range22,range00f) #stacked as stack range
 r <- stackApply(sr,indices=c(1),fun=sum) #merged as range
-r[(r == 0)] <- NA     #In this sum, the ocean was assignes the value 0, which before plotting should be changed
-r[r==2] <- 4        #This and the next few steps are a fairly complicated (it was just the first way I could think of) to change the order from area gain, loss and retained to the more logical area gain, retained, loss
-r[r==3] <- 2
-r[r==4] <- 3
+r[r == 0] <- NA     #In this sum, the ocean was assignes the value 0, which before plotting should be changed
+r[r == 2] <- 4        #This and the next few steps are a fairly complicated (it was just the first way I could think of) to change the order from area gain, loss and retained to the more logical area gain, retained, loss
+r[r == 3] <- 2
+r[r == 4] <- 3
 rgg <- (ggplot() 
         + annotation_map(map_data("world"),fill="gray90")
         + theme_minimal()
